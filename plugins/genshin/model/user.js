@@ -9,6 +9,8 @@ import MysUser from './mys/MysUser.js'
 import { promisify } from 'node:util'
 import YAML from 'yaml'
 import { Data } from '#miao'
+import { Player } from '#miao.models'
+import { UserGameDB, sequelize } from './db/index.js'
 
 export default class User extends base {
   constructor (e) {
@@ -62,7 +64,11 @@ export default class User extends base {
     }
 
     // TODO：独立的mys数据，不走缓存ltuid
-    let mys = await MysUser.create(param.ltuid)
+    let mys = await MysUser.create(param.ltuid || param.ltuid_v2 || param.ltmid_v2)
+    if (!mys) {
+      await this.e.reply('发送cookie不完整或数据错误')
+      return
+    }
     let data = {}
     data.ck = `ltoken=${param.ltoken};ltuid=${param.ltuid || param.login_uid};cookie_token=${param.cookie_token || param.cookie_token_v2}; account_id=${param.ltuid || param.login_uid};`
     let flagV2 = false
@@ -70,7 +76,7 @@ export default class User extends base {
     if (param.cookie_token_v2 && (param.account_mid_v2 || param.ltmid_v2)) { //
       // account_mid_v2 为版本必须带的字段，不带的话会一直提示绑定cookie失败 请重新登录
       flagV2 = true
-      data.ck = `ltuid=${param.ltuid || param.login_uid};account_mid_v2=${param.account_mid_v2};cookie_token_v2=${param.cookie_token_v2};ltoken_v2=${param.ltoken_v2};ltmid_v2=${param.ltmid_v2};`
+      data.ck = `ltuid=${param.ltuid || param.login_uid || param.ltuid_v2};account_mid_v2=${param.account_mid_v2};cookie_token_v2=${param.cookie_token_v2};ltoken_v2=${param.ltoken_v2};ltmid_v2=${param.ltmid_v2};`
     }
     if (param.mi18nLang) {
       data.ck += ` mi18nLang=${param.mi18nLang};`
@@ -97,8 +103,8 @@ export default class User extends base {
       let userFullInfo = await mys.getUserFullInfo()
       if (userFullInfo?.data?.user_info) {
         let userInfo = userFullInfo?.data?.user_info
-        // this.ltuid = userInfo.uid
-        // this.ck = `${this.ck}ltuid=${this.ltuid};`
+        this.ltuid = userInfo.uid || this.ltuid
+        this.ck = `${this.ck}ltuid=${this.ltuid};`
       } else {
         logger.mark(`绑定cookie错误2：${userFullInfo.message || 'cookie错误'}`)
         return await this.e.reply(`绑定cookie失败：${userFullInfo.message || 'cookie错误'}`)
@@ -113,27 +119,31 @@ export default class User extends base {
 
     logger.mark(`${this.e.logFnc} 保存cookie成功 [ltuid:${mys.ltuid}]`)
 
-    let uidMsg = [`绑定cookie成功`]
+    let uidMsg = [`绑定cookie成功`, mys.getUidInfo()]
     await this.e.reply(uidMsg.join('\n'))
-    let msg = ''
+    let msg = []
     if (mys.hasGame('gs')) {
-      msg += '原神模块支持：\n【#体力】查询当前树脂'
-      msg += '\n【#签到】米游社原神自动签到'
-      msg += '\n【#关闭签到】开启或关闭原神自动签到'
-      msg += '\n【#原石】查看原石札记'
-      msg += '\n【#原石统计】原石统计数据'
-      msg += '\n【#练度统计】技能统计列表'
-      msg += '\n【#uid】当前绑定ck uid列表'
-      msg += '\n【#ck】检查当前用户ck是否有效'
-      msg += '\n【#我的ck】查看当前绑定ck'
-      msg += '\n【#删除ck】删除当前绑定ck'
+      msg.push(
+        '原神模块支持：',
+        '【#uid】当前绑定ck uid列表',
+        '【#我的ck】查看当前绑定ck',
+        '【#删除ck】删除当前绑定ck',
+        '【#体力】查询当前树脂',
+        '【#原石】查看原石札记',
+        '【#原石统计】原石统计数据',
+        '【#练度统计】技能统计列表',
+        '【#面板】【#更新面板】面板信息'
+      )
     }
     if (mys.hasGame('sr')) {
-      msg += '\n星穹铁道支持：\n功能还在咕咕咕~'
+      msg.push(
+        '星穹铁道支持：',
+        '【*uid】当前绑定ck uid列表',
+        '【*体力】体力信息',
+        '【*面板】【*更新面板】面板信息'
+      )
     }
-    msg += '\n 支持绑定多个ck'
-    msg = await common.makeForwardMsg(this.e, ['使用命令说明', msg], '绑定成功：使用命令说明')
-
+    msg = await common.makeForwardMsg(this.e, ['使用命令说明', msg.join('\n')], '绑定成功：使用命令说明')
     await this.e.reply(msg)
   }
 
@@ -141,12 +151,17 @@ export default class User extends base {
   async delCk () {
     let user = await this.user()
     // 获取当前uid
-    let uidData = user.getUidData(this.e)
+    let uidData = user.getUidData('', this.e)
     if (!uidData || uidData.type !== 'ck' || !uidData.ltuid) {
-      return `删除失败：当前的UID${uidData.uid}无CK信息`
+      return `删除失败：当前的UID${uidData?.uid}无CK信息`
     }
+    let mys = await MysUser.create(uidData.ltuid)
+    if (!mys) {
+      return `删除失败：当前的UID${uidData?.uid}无CK信息`
+    }
+    let msg = [`绑定cookie已删除`, mys.getUidInfo()]
     await user.delMysUser(uidData.ltuid)
-    return `绑定cookie已删除`
+    return msg.join('\n')
   }
 
   /** 绑定uid，若有ck的话优先使用ck-uid */
@@ -198,6 +213,33 @@ export default class User extends base {
     })
     msg.unshift('通过【#uid+序号】来切换uid，【#删除uid+序号】删除uid')
     await this.e.reply(msg.join('\n'))
+  }
+
+  /** #uid */
+  async showUid2 () {
+    let user = await this.user()
+    let uids = [{
+      key: 'gs',
+      name: '原神'
+    }, {
+      key: 'sr',
+      name: '星穹铁道'
+    }]
+    lodash.forEach(uids, (ds) => {
+      ds.uidList = user.getUidList(ds.key)
+      ds.uid = user.getUid(ds.key)
+      lodash.forEach(ds.uidList, (uidDs) => {
+        let player = Player.create(uidDs.uid, ds.key)
+        if (player) {
+          uidDs.name = player.name
+          uidDs.level = player.level
+        }
+      })
+    })
+    let e = this.e
+    return e.runtime.render('genshin', 'html/user/uid-list', {
+      uids
+    })
   }
 
   /** 切换uid */
@@ -265,8 +307,11 @@ export default class User extends base {
   }
 
   /** 加载V3ck */
-  async loadOldDataV3 (data) {
+  async loadOldDataV3 () {
     let dir = './data/MysCookie/'
+    if (!fs.existsSync(dir)) {
+      return false
+    }
     Data.createDir('./temp/MysCookieBak')
     let files = fs.readdirSync(dir).filter(file => file.endsWith('.yaml'))
     const readFile = promisify(fs.readFile)
@@ -292,6 +337,48 @@ export default class User extends base {
     if (count > 0) {
       logger.mark(logger.green(`DB导入V3用户ck${count}个`))
     }
+  }
+
+  async loadOldUid () {
+    // 从DB中导入
+    await sequelize.query(`delete from UserGames where userId is null or data is null`, {})
+    let games = await UserGameDB.findAll()
+    let count = 0
+    await Data.asyncPool(20, games, async (game) => {
+      if (!game.userId) {
+        game.destroy()
+        return true
+      }
+      count++
+      let user = await NoteUser.create(game.userId)
+      if (game.userId && game.data) {
+        lodash.forEach(game.data, (ds) => {
+          let { uid } = ds
+          user.addRegUid(uid, game.game, false)
+        })
+      }
+      if (game.uid) {
+        user.setMainUid(game.uid, game.game, false)
+      }
+      await user.save()
+      await game.destroy()
+    })
+
+    // 从Redis中导入
+    let keys = await redis.keys('Yz:genshin:mys:qq-uid:*')
+    for (let key of keys) {
+      let uid = await redis.get(key)
+      let qqRet = /Yz:genshin:mys:qq-uid:(\d{5,12})/.exec(key)
+      if (qqRet?.[1] && uid) {
+        let user = await NoteUser.create(qqRet[1])
+        if (!user.getUid('gs')) {
+          user.addRegUid(uid, 'gs')
+        }
+      }
+      redis.del(key)
+    }
+    await sequelize.query(`delete from Users where (ltuids is null or ltuids='') and games is null`, {})
+    console.log('load Uid Data Done...')
   }
 
   async loadOldData (data) {
@@ -337,13 +424,18 @@ export default class User extends base {
       }
       await user.save()
       if (fs.existsSync(`./data/MysCookie/${qq}.yaml`)) {
-        fs.rename(`./data/MysCookie/${qq}.yaml`, `./temp/MysCookieBak/${qq}.yaml`, (err) => {
-          if (err) console.log(err)
-        })
+        try {
+          let src = `./data/MysCookie/${qq}.yaml`;
+          let dest = `./temp/MysCookieBak/${qq}.yaml`;
+          await fs.promises.unlink(dest).catch((_) => { });
+          await fs.promises.copyFile(src, dest);
+          await fs.promises.unlink(src);
+        } catch (err) {
+          console.log(err);
+        }
       }
       count++
     }
-    return count
   }
 
   /** 我的ck */
