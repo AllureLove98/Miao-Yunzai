@@ -37,7 +37,8 @@
     "redis": "^4.6.6",
     "sequelize": "^6.31.1",
     "sqlite3": "^5.1.6",
-    "yaml": "^2.2.2"
+    "yaml": "^2.2.2",
+    "mathjs": "^11.8.2"
   },
   "devDependencies": {
     "eslint": "^8.41.0",
