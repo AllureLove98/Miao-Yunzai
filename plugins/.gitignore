@@ -18,7 +18,12 @@ other/**
 
 !example
 example/**
+!example/WishCalculator.js
 !example/一言.js
+!example/喜报.js
+!example/查委托.js
+!example/谁at我.js
+!example/onset.js
 !example/主动复读.js
 !example/进群退群通知.js
 

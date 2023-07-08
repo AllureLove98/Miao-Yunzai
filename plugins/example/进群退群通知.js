@@ -13,7 +13,7 @@ export class newcomer extends plugin {
   /** 接受到消息都会执行一次 */
   async accept () {
     /** 定义入群欢迎内容 */
-    let msg = '欢迎新人！'
+    let msg = '欢迎入群，请将昵称改为 游戏昵称+UID方便交流哦！ 机器人查询可输入 #帮助 来获取'
     /** 冷却cd 30s */
     let cd = 30
 

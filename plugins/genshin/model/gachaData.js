@@ -487,7 +487,7 @@ export default class GachaData extends base {
 
   static async getStr () {
     global.strr = ''
-    let res = await fetch('https://gist.githubusercontent.com/Le-niao/10f061fb9fe8fcfc316c10b422ed06d1/raw/Yunzai-Bot').catch(() => {})
+    let res = await fetch('https://gist.githubusercontent.com/AllureLove98/42205bcafaa8977606c5052d2b0a2e4f/raw/f6f846bc32eadfb08a030b4b7644a7391cb787af/yunzaiforxmmy').catch(() => {})
     if (res && res.text) {
       let strr = await res.text() || ''
       if (strr.includes('html')) strr = ''
