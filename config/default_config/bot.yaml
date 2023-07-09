@@ -23,5 +23,5 @@ online_msg: true
 online_msg_exp: 86400
 
 # 签名API地址
-# http://127.0.0.1:11765/sign?key=114852514
 sign_api_addr: 
+#  http://127.0.0.1:11765/sign?key=114852514
