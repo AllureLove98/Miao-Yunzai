@@ -87,6 +87,21 @@ export default class apiTool {
           url: `${hostRecord}game_record/app/genshin/api/gcg/basicInfo`,
           query: `role_id=${this.uid}&server=${this.server}`
         },
+        /**七圣牌组 */
+        deckList: {
+          url: `${hostRecord}game_record/app/genshin/api/gcg/deckList`,
+          query: `role_id=${this.uid}&server=${this.server}`
+        },
+        /** 七圣召唤角色牌数据 */
+        avatar_cardList: {
+          url: `${hostRecord}game_record/app/genshin/api/gcg/cardList`,
+          query: `limit=999&need_action=false&need_avatar=true&need_stats=true&offset=0&role_id=${this.uid}&server=${this.server}`
+        },
+        /** 七圣召唤行动牌数据 */
+        action_cardList: {
+          url: `${hostRecord}game_record/app/genshin/api/gcg/cardList`,
+          query: `limit=999&need_action=true&need_avatar=false&need_stats=true&offset=0&role_id=${this.uid}&server=${this.server}`
+        },
         /**使用兑换码 目前仅限国际服,来自于国服的uid请求已在myinfo.js的init方法提前拦截 */
         useCdk: {
           url: 'PLACE_HOLDER',
@@ -158,6 +173,17 @@ export default class apiTool {
         dailyNote: {
           url: `${hostRecord}game_record/app/hkrpg/api/note`,
           query: `role_id=${this.uid}&server=${this.server}`
+        },
+        /** 养成计算器 */
+        compute: {
+          url: `${host}event/rpgcalc/compute?`,
+          query:`game=hkrpg`,
+          body: data
+        },
+        /** 详情 */
+        detail: {
+          url: `${host}event/rpgcalc/avatar/detail`,
+          query: `game=hkrpg&lang=zh-cn&item_id=${data.avatar_id}&tab_from=${data.tab_from}&change_target_level=0&uid=${this.uid}&region=${this.server}`
         }
       }
     }
