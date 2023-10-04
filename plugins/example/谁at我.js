@@ -1,17 +1,13 @@
 import plugin from '../../lib/plugins/plugin.js'
-import {
-  segment
-} from "oicq";
 import moment from "moment"
 
-await init()
 /* 
 插件说明:你是否遇到过这种情景:你点进一个99+的QQ群，发现有人艾特/回复过你，你满心期待地去查看，结果腾讯告诉你消息过多无法定义到上下文。现在你只需要这个插件即可找出到底是谁艾特了你。
 插件制作:花海里的秋刀鱼(717157592)
 首发群:258623209
-版本:1.5
-时间:2022.12.3
-更新内容: 增加艾特全体成员的信息提醒
+版本:1.6
+时间:2023.10.3
+更新内容: 增加艾特全体成员的信息提醒，修复转发bug
 触发指令: 谁艾特我
 */
 
@@ -167,10 +163,17 @@ export class whoAtme extends plugin {
     }
 
     let forwardMsg = await e.group.makeForwardMsg(msgList)
-    forwardMsg.data = forwardMsg.data
-      .replace(/\n/g, '')
-      .replace(/<title color="#777777" size="26">(.+?)<\/title>/g, '___')
-      .replace(/___+/, `<title color="#777777" size="26">点击显示内容</title>`)
+    if (typeof (forwardMsg.data) === 'object') {
+      let detail = forwardMsg.data?.meta?.detail
+      if (detail) {
+        detail.news = [{ text: '点击显示内容' }]
+      }
+    } else {
+      forwardMsg.data = forwardMsg.data
+        .replace(/\n/g, '')
+        .replace(/<title color="#777777" size="26">(.+?)<\/title>/g, '___')
+        .replace(/___+/, `<title color="#777777" size="26">点击显示内容</title>`)
+    }
     await e.reply(forwardMsg)
     return false
   }
@@ -196,16 +199,4 @@ export class whoAtme extends plugin {
     }
     e.reply('已成功清除全部艾特数据')
   }
-}
-
-
-//数据库格式化
-async function init() {
-  let atData = await redis.get('Yz:whoAtme_init')
-  if (atData) return
-  let data = await redis.keys('Yz:whoAtme:*')
-  for (let i of data) {
-    await redis.del(i)
-  }
-  await redis.set('Yz:whoAtme_init', 1)
 }

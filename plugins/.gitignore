@@ -18,7 +18,7 @@ other/**
 
 !example
 example/**
-!example/WishCalculator.js
+!example/留言.js
 !example/一言.js
 !example/喜报.js
 !example/查委托.js
