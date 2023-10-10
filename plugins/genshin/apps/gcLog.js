@@ -20,19 +20,19 @@ export class gcLog extends plugin {
           fnc: 'logUrl'
         },
         {
-          reg: '#txt日志文件导入记录',
+          reg: '^#txt日志文件导入记录$',
           fnc: 'logFile'
         },
         {
-          reg: '#xlsx文件导入记录',
+          reg: '^#xlsx文件导入记录$',
           fnc: 'logXlsx'
         },
         {
-          reg: '#json文件导入记录',
+          reg: '^#json文件导入记录$',
           fnc: 'logJson'
         },
         {
-          reg: '^#*(原神|星铁)?(全部)?(抽卡|抽奖|角色|武器|常驻|up|新手|光锥)池*(记录|祈愿|分析)$',
+          reg: '^#*(原神|星铁)?(全部)?(抽卡|抽奖|角色|武器|常驻|up|新手|光锥|全部)池*(记录|祈愿|分析)$',
           fnc: 'getLog'
         },
         {
