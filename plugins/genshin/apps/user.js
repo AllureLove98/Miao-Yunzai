@@ -34,11 +34,11 @@ export class user extends plugin {
           fnc: 'myCk'
         },
         {
-          reg: '^#?删除(ck|cookie)$',
+          reg: '^#?(原神|星铁)?删除(ck|cookie)$',
           fnc: 'delCk'
         },
         {
-          reg: '^#?(原神|星铁)?(删除|解绑)(uid|UID)?\\s*[0-9]{1,2}$',
+          reg: '^#?(原神|星铁)?(删除|解绑)(uid|UID)\\s*[0-9]{1,2}$',
           fnc: 'delUid'
         },
         {
