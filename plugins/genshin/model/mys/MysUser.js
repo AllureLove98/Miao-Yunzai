@@ -348,7 +348,7 @@ export default class MysUser extends BaseModel {
     let ck = this.ck
     let url = {
       mys: 'https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie',
-      hoyolab: 'https://sg-public-api.hoyolab.com/binding/api/getUserGameRolesByCookie'
+      hoyolab: 'https://sg-public-api.xmmy.eu.org/binding/api/getUserGameRolesByCookie'
     }
 
     let res = await fetch(url[serv], { method: 'get', headers: { Cookie: ck } })

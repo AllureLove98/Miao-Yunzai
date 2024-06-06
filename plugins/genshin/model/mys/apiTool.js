@@ -211,7 +211,7 @@ export default class apiTool {
         /** 养成计算器 */
         compute: {
           url: `${host}event/rpgcalc/compute?`,
-          query:`game=hkrpg`,
+          query: `game=hkrpg`,
           body: data.body
         },
         /** 详情 */
@@ -232,9 +232,9 @@ export default class apiTool {
       urlMap.genshin.blueprint.query = `share_code=${data.share_code}&region=${this.server}&lang=zh-cn`
       urlMap.genshin.blueprintCompute.url = 'https://sg-public-api.xmmy.eu.org/event/calculateos/furniture/compute'
       urlMap.genshin.blueprintCompute.body = { lang: 'zh-cn', ...data.body }
-      urlMap.genshin.ys_ledger.url = 'https://sg-hk4e-api.hoyolab.com/event/ysledgeros/month_info'// 支持了国际服札记
+      urlMap.genshin.ys_ledger.url = 'https://sg-hk4e-api-hoyolab.xmmy.eu.org/event/ysledgeros/month_info'// 支持了国际服札记
       urlMap.genshin.ys_ledger.query = `lang=zh-cn&month=${data.month}&uid=${this.uid}&region=${this.server}`
-      urlMap.genshin.useCdk.url = 'https://sg-hk4e-api.hoyoverse.com/common/apicdkey/api/webExchangeCdkey'
+      urlMap.genshin.useCdk.url = 'https://sg-hk4e-api-hoyoverse.xmmy.eu.org/common/apicdkey/api/webExchangeCdkey'
       urlMap.genshin.useCdk.query = `uid=${this.uid}&region=${this.server}&lang=zh-cn&cdkey=${data.cdk}&game_biz=hk4e_global`
     }
     return urlMap[this.game]

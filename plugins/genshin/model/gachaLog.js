@@ -217,7 +217,7 @@ export default class GachaLog extends base {
     let logUrl = "https://public-operation-hk4e.mihoyo.com/gacha_info/api/getGachaLog?"
     /** 国际服 */
     if (!["cn_gf01", "cn_qd01"].includes(param.region)) {
-      logUrl = "https://hk4e-api-os.hoyoverse.com/gacha_info/api/getGachaLog?"
+      logUrl = "https://hk4e-api-os.xmmy.eu.org/gacha_info/api/getGachaLog?"
     }
 
     let logParam = new URLSearchParams({
