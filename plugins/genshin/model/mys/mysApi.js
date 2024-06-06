@@ -150,9 +150,9 @@ export default class MysApi {
       app_version: '2.9.0',
       User_Agent: `Mozilla/5.0 (Linux; Android 12; ${this.device}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.73 Mobile Safari/537.36 miHoYoBBSOversea/2.9.0`,
       client_type: '2',
-      Origin: 'https://webstatic-sea.hoyolab.com',
+      Origin: 'https://webstatic.xmmy.eu.org',
       X_Requested_With: 'com.mihoyo.hoyolab',
-      Referer: 'https://webstatic-sea.hoyolab.com'
+      Referer: 'https://webstatic.xmmy.eu.org'
     }
     let client
     if (/os_|official/.test(this.server)) {
