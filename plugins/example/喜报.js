@@ -16,7 +16,8 @@
 
 import fs from "fs";
 import plugin from "../../lib/plugins/plugin.js";
-import fetch from 'node-fetch';
+import { segment } from "oicq";
+import puppeteer from "puppeteer";
 
 //字体文件，可以自行替换
 const fontFamily = "Microsoft YaHei";

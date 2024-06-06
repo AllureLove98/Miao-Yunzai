@@ -27,6 +27,7 @@ example/**
 !example/主动复读.js
 !example/进群退群通知.js
 !example/舔狗日记.js
+!example/电子木鱼.js
 
 *.psd
 *.map
