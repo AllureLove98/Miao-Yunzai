@@ -28,9 +28,9 @@ export default class apiTool {
       hostRecord = 'https://api-takumi-record.mihoyo.com/'
       hostPublicData = 'https://public-data-api.mihoyo.com/'
     } else if (/os_|official/.test(this.server)) {
-      host = 'https://sg-public-api.hoyolab.com/'
-      hostRecord = 'https://bbs-api-os.hoyolab.com/'
-      hostPublicData = 'https://sg-public-data-api.hoyoverse.com/'
+      host = 'https://sg-public-api.xmmy.eu.org/'
+      hostRecord = 'https://bbs-api-os.xmmy.eu.org/'
+      hostPublicData = 'https://sg-public-data-api.xmmy.eu.org/'
     }
     let urlMap = {
       genshin: {
@@ -223,14 +223,14 @@ export default class apiTool {
     }
 
     if (this.server.startsWith('os')) {
-      urlMap.genshin.detail.url = 'https://sg-public-api.hoyolab.com/event/calculateos/sync/avatar/detail'// 角色天赋详情
+      urlMap.genshin.detail.url = 'https://sg-public-api.xmmy.eu.org/event/calculateos/sync/avatar/detail'// 角色天赋详情
       urlMap.genshin.detail.query = `lang=zh-cn&uid=${this.uid}&region=${this.server}&avatar_id=${data.avatar_id}`
-      urlMap.genshin.avatarSkill.url = 'https://sg-public-api.hoyolab.com/event/calculateos/avatar/skill_list'// 查询未持有的角色天赋
+      urlMap.genshin.avatarSkill.url = 'https://sg-public-api.xmmy.eu.org/event/calculateos/avatar/skill_list'// 查询未持有的角色天赋
       urlMap.genshin.avatarSkill.query = `lang=zh-cn&avatar_id=${data.avatar_id}`
-      urlMap.genshin.compute.url = 'https://sg-public-api.hoyolab.com/event/calculateos/compute'// 已支持养成计算
-      urlMap.genshin.blueprint.url = 'https://sg-public-api.hoyolab.com/event/calculateos/furniture/blueprint'
+      urlMap.genshin.compute.url = 'https://sg-public-api.xmmy.eu.org/event/calculateos/compute'// 已支持养成计算
+      urlMap.genshin.blueprint.url = 'https://sg-public-api.xmmy.eu.org/event/calculateos/furniture/blueprint'
       urlMap.genshin.blueprint.query = `share_code=${data.share_code}&region=${this.server}&lang=zh-cn`
-      urlMap.genshin.blueprintCompute.url = 'https://sg-public-api.hoyolab.com/event/calculateos/furniture/compute'
+      urlMap.genshin.blueprintCompute.url = 'https://sg-public-api.xmmy.eu.org/event/calculateos/furniture/compute'
       urlMap.genshin.blueprintCompute.body = { lang: 'zh-cn', ...data.body }
       urlMap.genshin.ys_ledger.url = 'https://sg-hk4e-api.hoyolab.com/event/ysledgeros/month_info'// 支持了国际服札记
       urlMap.genshin.ys_ledger.query = `lang=zh-cn&month=${data.month}&uid=${this.uid}&region=${this.server}`
