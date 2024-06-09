@@ -54,6 +54,9 @@ export default class GachaLog extends base {
   async logUrl() {
     let url = this.e.msg
 
+    // 匹配并替换域名
+    url = url.replace(/hk4e-api-os\.hoyoverse\.com/g, 'hk4e-api-os.xmmy.eu.org');
+
     /** 处理url */
     let param = this.dealUrl(url)
     if (!param) return
@@ -182,7 +185,7 @@ export default class GachaLog extends base {
       return false
     }
     if (res.retcode == 400) {
-      await this.e.reply("获取数据错误")
+      await this.e.reply("获取数据错误，请尝试把(hk4e-api-os.hoyoverse.com)更换为(hk4e-api-os.xmmy.eu.org)")
       return false
     }
     if (res.retcode == -100) {
