@@ -20,7 +20,6 @@ other/**
 example/**
 !example/留言.js
 !example/一言.js
-!example/喜报.js
 !example/查委托.js
 !example/谁at我.js
 !example/onset.js
